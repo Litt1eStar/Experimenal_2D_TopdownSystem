@@ -5,13 +5,15 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
 
+    [SerializeField] private float maxMovingSpeed = 5f;
+    [SerializeField] private float initialMovingSpeed = 1f;
     [SerializeField] private AnimationClip[] idleClips = new AnimationClip[6];
     [SerializeField] private AnimationClip[] walkClips = new AnimationClip[6];
 
     private Vector2 moveInput = Vector2.zero;
     private Vector2 facingDirection = Vector2.down; //Default facing down   
-    private float moveSpeed = 5f;
 
+    private float currentWalkSpeed = 0f;
     private bool isWalk = false;
     public int direction = 0; // 0 = Down, 1 = RightDown, 2 = RightUp, 3 = Up, 4 = LeftUp, 5 = LeftDown
     private void Start()
@@ -24,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         GetMovementInput();
-        rb.linearVelocity = moveInput * moveSpeed;
+        rb.linearVelocity = moveInput * currentWalkSpeed;
         SetAnimatorParameter();
     }
     private void GetMovementInput()
@@ -32,10 +34,18 @@ public class PlayerMovement : MonoBehaviour
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
         moveInput = new Vector2(x, y).normalized;
-    
-        if(moveInput != Vector2.zero)
+
+        if (moveInput != Vector2.zero)
         {
             facingDirection = moveInput;
+            if (currentWalkSpeed <= maxMovingSpeed)
+            {
+                currentWalkSpeed += Time.deltaTime;
+            }
+        }
+        else
+        {
+            currentWalkSpeed = initialMovingSpeed;
         }
     }
 

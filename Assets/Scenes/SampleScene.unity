@@ -413,6 +413,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8c12e3bb14f8264997e3f717e1f969f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  maxMovingSpeed: 5
+  initialMovingSpeed: 2
   idleClips:
   - {fileID: 7400000, guid: 48d48268a187b844ea2bf3627cd7bfb7, type: 2}
   - {fileID: 7400000, guid: 819f4220ed936df4082627b0bd027124, type: 2}
