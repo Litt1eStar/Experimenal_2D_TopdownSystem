@@ -32,12 +32,17 @@ public class PlayerMovement : MonoBehaviour
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
         moveInput = new Vector2(x, y).normalized;
+    
+        if(moveInput != Vector2.zero)
+        {
+            facingDirection = moveInput;
+        }
     }
 
     private void SetAnimatorParameter()
     {
         isWalk = moveInput.magnitude > 0;
-        direction = GetDirectionIndex(moveInput);
+        direction = isWalk ? GetDirectionIndex(moveInput) : GetDirectionIndex(facingDirection);
 
         anim.SetBool("isWalk", isWalk);
         anim.SetFloat("Direction", direction);
