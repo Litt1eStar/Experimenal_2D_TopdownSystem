@@ -415,6 +415,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   maxMovingSpeed: 5
   initialMovingSpeed: 2
+  dashSpeed: 20
+  dashDuration: 0.2
+  dashCooldown: 0.5
+  dashKeyCode: 304
   idleClips:
   - {fileID: 7400000, guid: 48d48268a187b844ea2bf3627cd7bfb7, type: 2}
   - {fileID: 7400000, guid: 819f4220ed936df4082627b0bd027124, type: 2}

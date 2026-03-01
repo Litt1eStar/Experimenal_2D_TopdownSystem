@@ -1,19 +1,35 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private Rigidbody2D rb;
-    private Animator anim;
 
+    [Header("Movement Setting")]
     [SerializeField] private float maxMovingSpeed = 5f;
     [SerializeField] private float initialMovingSpeed = 1f;
+    [SerializeField] private float dashSpeed = 10f;
+    [SerializeField] private float dashDuration = 2f;
+    [SerializeField] private float dashCooldown = 1f;
+    [SerializeField] private KeyCode dashKeyCode = KeyCode.LeftShift;
+
+    [Header("Animation Clip")]
     [SerializeField] private AnimationClip[] idleClips = new AnimationClip[6];
     [SerializeField] private AnimationClip[] walkClips = new AnimationClip[6];
+
+    [Header("Animaton String Trigger")]
+    [SerializeField] private const string isWalkParameter = "isWalk";
+    [SerializeField] private const string directionParameter = "Direction";
+
+    private Rigidbody2D rb;
+    private Animator anim;
 
     private Vector2 moveInput = Vector2.zero;
     private Vector2 facingDirection = Vector2.down; //Default facing down   
 
     private float currentWalkSpeed = 0f;
+    private float currentDashTime = 0f;
+    private float dashCooldownTimer = 0f;
+    private bool canDash = true;
     private bool isWalk = false;
     public int direction = 0; // 0 = Down, 1 = RightDown, 2 = RightUp, 3 = Up, 4 = LeftUp, 5 = LeftDown
     private void Start()
@@ -28,6 +44,11 @@ public class PlayerMovement : MonoBehaviour
         GetMovementInput();
         rb.linearVelocity = moveInput * currentWalkSpeed;
         SetAnimatorParameter();
+
+        if (Input.GetKeyDown(dashKeyCode) && canDash)
+        {
+            StartCoroutine(Dash(facingDirection));
+        }
     }
     private void GetMovementInput()
     {
@@ -49,13 +70,36 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private IEnumerator Dash(Vector2 direction)
+    {
+        currentDashTime = dashDuration;
+        canDash = false;
+
+        while(currentDashTime > 0f)
+        {
+            currentDashTime -= Time.deltaTime;
+            rb.linearVelocity = direction * dashSpeed;
+            yield return null;  
+        }
+
+        rb.linearVelocity = Vector2.zero;
+
+        dashCooldownTimer = dashCooldown;
+        while (dashCooldownTimer > 0f)
+        {
+            dashCooldownTimer -= Time.deltaTime;
+            yield return null;
+        }
+
+        canDash = true;
+    }
     private void SetAnimatorParameter()
     {
         isWalk = moveInput.magnitude > 0;
         direction = isWalk ? GetDirectionIndex(moveInput) : GetDirectionIndex(facingDirection);
 
-        anim.SetBool("isWalk", isWalk);
-        anim.SetFloat("Direction", direction);
+        anim.SetBool(isWalkParameter, isWalk);
+        anim.SetFloat(directionParameter, direction);
     }
 
     private int GetDirectionIndex(Vector2 direction)
