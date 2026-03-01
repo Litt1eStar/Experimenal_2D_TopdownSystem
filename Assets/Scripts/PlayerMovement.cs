@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -15,43 +14,33 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isWalk = false;
     public int direction = 0; // 0 = Down, 1 = RightDown, 2 = RightUp, 3 = Up, 4 = LeftUp, 5 = LeftDown
-    void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody2D>();  
         anim = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        anim.SetBool("isWalk", isWalk);
-
+        GetMovementInput();
         rb.linearVelocity = moveInput * moveSpeed;
         SetAnimatorParameter();
     }
-
-    void OnMove(InputValue _value)
+    private void GetMovementInput()
     {
-        Vector2 input = (_value.Get<Vector2>()).normalized;
-        moveInput = input;
-        
-        if(moveInput != Vector2.zero)
-        {
-            facingDirection = moveInput;
-        }
-    }
-
-    void OnDash()
-    {
-        print("Dash!");
+        float x = Input.GetAxisRaw("Horizontal");
+        float y = Input.GetAxisRaw("Vertical");
+        moveInput = new Vector2(x, y).normalized;
     }
 
     private void SetAnimatorParameter()
     {
         isWalk = moveInput.magnitude > 0;
         direction = GetDirectionIndex(moveInput);
+
+        anim.SetBool("isWalk", isWalk);
         anim.SetFloat("Direction", direction);
-        Debug.Log(direction);
     }
 
     private int GetDirectionIndex(Vector2 direction)
