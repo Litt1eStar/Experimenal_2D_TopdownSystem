@@ -61,7 +61,7 @@ public class PlayerMovement : MonoBehaviour
             facingDirection = moveInput;
             if (currentWalkSpeed <= maxMovingSpeed)
             {
-                currentWalkSpeed += Time.deltaTime;
+                currentWalkSpeed = Mathf.Lerp(currentWalkSpeed, maxMovingSpeed, Time.deltaTime * 5);
             }
         }
         else
