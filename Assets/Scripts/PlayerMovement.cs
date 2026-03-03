@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -141,5 +142,10 @@ public class PlayerMovement : MonoBehaviour
             directionIndex = 5;
         }
         return directionIndex;
+    }
+
+    private void OnAttack()
+    {
+        int a = 10;
     }
 }
