@@ -33,7 +33,7 @@ public class AimController : MonoBehaviour
             StartCoroutine(FiringCooldown(firingCooldown));
         }
 
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1) && canFire)
         {
             GetClickPosition(out Vector3 direction);
             ProjectileObject projectile = CreateProjectilePrefab(rightHand_attack_prefab, rightHand_origin.position, direction);

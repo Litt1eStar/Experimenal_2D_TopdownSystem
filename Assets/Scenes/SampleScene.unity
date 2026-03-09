@@ -484,6 +484,7 @@ MonoBehaviour:
   rightHand_origin: {fileID: 1016960649}
   leftHand_attack_prefab: {fileID: 6306829021704898818, guid: 6a74bab0794d5b043abd96ca2734fa52, type: 3}
   rightHand_attack_prefab: {fileID: 7951977459889694019, guid: afa81958e035fa648a097dc2a10c4325, type: 3}
+  firingCooldown: 1
 --- !u!1 &922623348
 GameObject:
   m_ObjectHideFlags: 0
