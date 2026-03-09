@@ -18,19 +18,9 @@ public class AimController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && canFire)
         {
-            Vector3 screenPosition = Input.mousePosition;
-            screenPosition.z = transform.position.z;
+            GetClickPosition(out Vector3 direction);
+            ProjectileObject projectile = CreateProjectilePrefab(direction);    
 
-            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
-            Vector3 direction = (worldPosition - transform.position).normalized;
-
-            GameObject attackPrefab = Instantiate(
-                leftHand_attack_prefab,
-                leftHand_origin.position,
-                Quaternion.LookRotation(Vector3.forward, direction)
-                );
-
-            ProjectileObject projectile = attackPrefab.GetComponent<ProjectileObject>();
             if (projectile != null)
             {
                 projectile.direction = direction;
@@ -49,6 +39,18 @@ public class AimController : MonoBehaviour
         }
     }
 
+    private ProjectileObject CreateProjectilePrefab(Vector3 _direction)
+    {
+        GameObject attackPrefab = Instantiate(
+            leftHand_attack_prefab,
+            leftHand_origin.position,
+            Quaternion.LookRotation(Vector3.forward, _direction)
+            );
+
+        ProjectileObject projectile = attackPrefab.GetComponent<ProjectileObject>();
+
+        return projectile;
+    }
     private IEnumerator FiringCooldown(float _firingCooldown)
     {
         firingTimer = _firingCooldown;
@@ -62,5 +64,16 @@ public class AimController : MonoBehaviour
 
         firingTimer = 0f;
         canFire = true;
+    }
+
+    private void GetClickPosition(out Vector3 _direction)
+    {
+        Vector3 screenPosition = Input.mousePosition;
+        screenPosition.z = transform.position.z;
+
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
+        Vector3 direction = (worldPosition - transform.position).normalized;
+
+        _direction = direction;
     }
 }
