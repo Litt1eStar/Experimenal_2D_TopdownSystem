@@ -1,0 +1,66 @@
+using System.Collections;
+using UnityEngine;
+
+public class AimController : MonoBehaviour
+{
+    [SerializeField] private Transform leftHand_origin;
+    [SerializeField] private Transform rightHand_origin;
+
+    [SerializeField] private GameObject leftHand_attack_prefab;
+    [SerializeField] private GameObject rightHand_attack_prefab;
+
+    [SerializeField] private float firingCooldown = 0.5f;
+
+    private bool canFire = true;
+    private float firingTimer = 0f;
+    private Transform targetPosition;
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0) && canFire)
+        {
+            Vector3 screenPosition = Input.mousePosition;
+            screenPosition.z = transform.position.z;
+
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
+            Vector3 direction = (worldPosition - transform.position).normalized;
+
+            GameObject attackPrefab = Instantiate(
+                leftHand_attack_prefab,
+                leftHand_origin.position,
+                Quaternion.LookRotation(Vector3.forward, direction)
+                );
+
+            ProjectileObject projectile = attackPrefab.GetComponent<ProjectileObject>();
+            if (projectile != null)
+            {
+                projectile.direction = direction;
+
+                Vector3 pos = projectile.transform.position;
+                pos.z = 0f;
+                projectile.transform.position = pos;
+            }
+
+            StartCoroutine(FiringCooldown(firingCooldown));
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+
+        }
+    }
+
+    private IEnumerator FiringCooldown(float _firingCooldown)
+    {
+        firingTimer = _firingCooldown;
+        canFire = false;
+
+        while(firingTimer > 0f)
+        {
+            firingTimer -= Time.deltaTime;
+            yield return null;
+        }
+
+        firingTimer = 0f;
+        canFire = true;
+    }
+}
