@@ -19,7 +19,7 @@ public class AimController : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && canFire)
         {
             GetClickPosition(out Vector3 direction);
-            ProjectileObject projectile = CreateProjectilePrefab(direction);    
+            ProjectileObject projectile = CreateProjectilePrefab(leftHand_attack_prefab, leftHand_origin.position, direction);    
 
             if (projectile != null)
             {
@@ -35,15 +35,27 @@ public class AimController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(1))
         {
+            GetClickPosition(out Vector3 direction);
+            ProjectileObject projectile = CreateProjectilePrefab(rightHand_attack_prefab, rightHand_origin.position, direction);
 
+            if (projectile != null)
+            {
+                projectile.direction = direction;
+
+                Vector3 pos = projectile.transform.position;
+                pos.z = 0f;
+                projectile.transform.position = pos;
+            }
+
+            StartCoroutine(FiringCooldown(firingCooldown));
         }
     }
 
-    private ProjectileObject CreateProjectilePrefab(Vector3 _direction)
+    private ProjectileObject CreateProjectilePrefab(GameObject prefab, Vector3 origin, Vector3 _direction)
     {
         GameObject attackPrefab = Instantiate(
-            leftHand_attack_prefab,
-            leftHand_origin.position,
+            prefab,
+            origin,
             Quaternion.LookRotation(Vector3.forward, _direction)
             );
 
